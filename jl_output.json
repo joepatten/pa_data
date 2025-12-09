@@ -240,21 +240,6 @@
     "State Province Full":"Scotland"
   },
   {
-    "Company":"Eden Valley Poultry",
-    "Title":"Workforce Planning & Development Manager",
-    "Date Pulled":"2025-12-08",
-    "Location":"Kings, Subdivision A, NS",
-    "Country":"Canada",
-    "Salary":null,
-    "Work Mode":"Hybrid",
-    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4326207593\/?eBP=NON_CHARGEABLE_CHANNEL&refId=IUqo%2B4GC1XMiutbRHlM%2Fwg%3D%3D&trackingId=L33H2kLEprpSM7VWpYC8UA%3D%3D&trk=flagship3_search_srp_jobs",
-    "New Flag":"New",
-    "State Province":"",
-    "Job Level":"Manager",
-    "Location Full":"Kings, Subdivision A, NS",
-    "State Province Full":""
-  },
-  {
     "Company":"Insight Global",
     "Title":"HR Data Analyst",
     "Date Pulled":"2025-12-08",
@@ -283,6 +268,21 @@
     "Job Level":"Individual Contributor",
     "Location Full":"Manitoba",
     "State Province Full":"Manitoba"
+  },
+  {
+    "Company":"Eden Valley Poultry",
+    "Title":"Workforce Planning & Development Manager",
+    "Date Pulled":"2025-12-08",
+    "Location":"Kings, Subdivision A, NS",
+    "Country":"Canada",
+    "Salary":null,
+    "Work Mode":"Hybrid",
+    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4326207593\/?eBP=NON_CHARGEABLE_CHANNEL&refId=IUqo%2B4GC1XMiutbRHlM%2Fwg%3D%3D&trackingId=L33H2kLEprpSM7VWpYC8UA%3D%3D&trk=flagship3_search_srp_jobs",
+    "New Flag":"New",
+    "State Province":"Nova Scotia",
+    "Job Level":"Manager",
+    "Location Full":"Kings, Subdivision A, NS",
+    "State Province Full":"Nova Scotia"
   },
   {
     "Company":"Independent Electricity System Operator (IESO)",
@@ -699,10 +699,10 @@
     "Work Mode":"On-site",
     "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4325996820\/?eBP=NON_CHARGEABLE_CHANNEL&refId=ijuycpStpmzrh9J4fpaMYw%3D%3D&trackingId=t2GHzkQ98ryC92IQT8vW7w%3D%3D&trk=flagship3_search_srp_jobs",
     "New Flag":null,
-    "State Province":"",
+    "State Province":"Alberta",
     "Job Level":"Individual Contributor",
     "Location Full":"Greater Calgary Metropolitan Area",
-    "State Province Full":""
+    "State Province Full":"Alberta"
   },
   {
     "Company":"Provincial Health Services Authority",
