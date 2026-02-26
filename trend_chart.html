@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PA Jobs Trend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Fira Code", "Courier New", monospace;
+      background: #14151d;
+      color: #c5c6c7;
+      min-height: 100vh;
+    }
+
+    #app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    #header {
+      margin-bottom: 20px;
+    }
+
+    #header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #66fcf1;
+      margin-bottom: 5px;
+      letter-spacing: 0.03em;
+    }
+
+    #header p {
+      font-size: 0.75rem;
+      color: #4a5568;
+    }
+
+    #main-layout {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    /* ── Controls panel ─────────────────────────────────────────────────────── */
+    #controls {
+      width: 210px;
+      flex-shrink: 0;
+      background: #0d0e14;
+      border-radius: 4px;
+      border: 1px solid #1f2833;
+      padding: 16px;
+    }
+
+    .ctrl-section {
+      margin-bottom: 16px;
+    }
+
+    .ctrl-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .ctrl-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #45a29e;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* View toggle */
+    .toggle-group {
+      display: flex;
+      border: 1px solid #1f2833;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 7px 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.72rem;
+      color: #6b7894;
+      transition: background 0.15s, color 0.15s;
+      line-height: 1.2;
+    }
+
+    .toggle-btn:hover:not(.active) {
+      background: #1f2833;
+      color: #c5c6c7;
+    }
+
+    .toggle-btn.active {
+      background: #1f2833;
+      color: #66fcf1;
+      font-weight: 700;
+    }
+
+    /* Checkbox lists */
+    .cb-list {
+      max-height: 148px;
+      overflow-y: auto;
+    }
+
+    .cb-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: #c5c6c7;
+      user-select: none;
+    }
+
+    .cb-item input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
+      cursor: pointer;
+      accent-color: #66fcf1;
+      flex-shrink: 0;
+    }
+
+    .cb-item span {
+      line-height: 1.3;
+    }
+
+    /* Divider */
+    .ctrl-divider {
+      border: none;
+      border-top: 1px solid #1f2833;
+      margin: 13px 0;
+    }
+
+    /* ── Chart container ────────────────────────────────────────────────────── */
+    #chart-wrap {
+      flex: 1;
+      min-width: 0;
+      background: #0d0e14;
+      border-radius: 4px;
+      border: 1px solid #1f2833;
+      padding: 16px 14px 12px 8px;
+      min-height: 380px;
+    }
+
+    /* SVG axis / grid styles */
+    .x-axis .domain  { stroke: #1f2833; }
+    .y-axis .domain  { stroke: none; }
+    .x-axis line     { stroke: #1f2833; }
+    .y-axis line     { stroke: none; }
+    .x-axis text, .y-axis text {
+      fill: #4a5568;
+      font-family: "Fira Code", monospace;
+      font-size: 10.5px;
+    }
+
+    .y-grid line   { stroke: #1a1d27; }
+    .y-grid .domain { display: none; }
+
+    .area-path {
+      fill: #66fcf1;
+      fill-opacity: 0.06;
+    }
+
+    .line-path {
+      fill: none;
+      stroke: #66fcf1;
+      stroke-width: 2px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .hover-line {
+      stroke: #1f2833;
+      stroke-width: 1px;
+      stroke-dasharray: 4 3;
+      pointer-events: none;
+    }
+
+    .hover-dot {
+      fill: #66fcf1;
+      stroke: #14151d;
+      stroke-width: 2.5px;
+      pointer-events: none;
+    }
+
+    /* ── Tooltip ────────────────────────────────────────────────────────────── */
+    #tooltip {
+      position: fixed;
+      background: #0d0e14;
+      border: 1px solid #1f2833;
+      color: #c5c6c7;
+      padding: 10px 14px;
+      border-radius: 3px;
+      font-family: "Fira Code", monospace;
+      font-size: 0.75rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.1s;
+      z-index: 9999;
+      white-space: nowrap;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    #tt-date   { color: #45a29e; margin-bottom: 3px; font-size: 0.7rem; }
+    #tt-count  { color: #66fcf1; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    #tt-filters { color: #4a5568; font-size: 0.68rem; }
+
+    /* ── Loading / error states ─────────────────────────────────────────────── */
+    #loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      font-size: 0.8rem;
+      color: #4a5568;
+    }
+
+    /* ── Scrollbar (dark) ───────────────────────────────────────────────────── */
+    .cb-list::-webkit-scrollbar { width: 4px; }
+    .cb-list::-webkit-scrollbar-track { background: #14151d; }
+    .cb-list::-webkit-scrollbar-thumb { background: #1f2833; border-radius: 2px; }
+
+    /* ── Responsive ─────────────────────────────────────────────────────────── */
+    @media (max-width: 680px) {
+      #main-layout { flex-direction: column; }
+      #controls { width: 100%; }
+      #chart-wrap { min-height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div id="header">
+    <h1>&gt; people_analytics_job_trends</h1>
+    <p id="meta-line">loading...</p>
+  </div>
+
+  <div id="main-layout">
+
+    <!-- Controls -->
+    <div id="controls">
+      <div class="ctrl-section">
+        <span class="ctrl-label">View</span>
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-view="active">Active Jobs</button>
+          <button class="toggle-btn" data-view="new">New Postings</button>
+        </div>
+      </div>
+
+      <hr class="ctrl-divider">
+
+      <div class="ctrl-section">
+        <span class="ctrl-label">Country</span>
+        <div class="cb-list" id="country-list"></div>
+      </div>
+
+      <hr class="ctrl-divider">
+
+      <div class="ctrl-section">
+        <span class="ctrl-label">Work Mode</span>
+        <div id="workmode-list"></div>
+      </div>
+
+      <hr class="ctrl-divider">
+
+      <div class="ctrl-section">
+        <span class="ctrl-label">Job Level</span>
+        <div class="cb-list" id="level-list"></div>
+      </div>
+
+    </div>
+
+    <!-- Chart -->
+    <div id="chart-wrap">
+      <div id="loading">loading trend data...</div>
+    </div>
+  </div>
+</div>
+
+<div id="tooltip">
+  <div id="tt-date"></div>
+  <div id="tt-count"></div>
+  <div id="tt-filters"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+// ── Configuration ──────────────────────────────────────────────────────────────
+const DATA_URL  = "trend_data.json";
+const DATA_INLINE = null;  // set to loaded JSON object to bypass fetch
+
+// Only plot data on or after this date
+const CHART_START = new Date("2026-01-01");
+
+// ── State ──────────────────────────────────────────────────────────────────────
+const state = {
+  viewMode:          "active",  // "active" | "new"
+  selectedCountries: new Set(), // empty = no filter (all pass)
+  selectedModes:     new Set(),
+  selectedLevels:    new Set(),
+};
+
+let DATA       = null;
+let jobPasses  = null;  // Uint8Array indexed by job id
+let chartData  = [];
+let allCountries = [];
+let allLevels    = [];
+
+// ── D3 chart setup ────────────────────────────────────────────────────────────
+const MARGIN = { top: 18, right: 24, bottom: 48, left: 54 };
+
+const chartWrap = document.getElementById("chart-wrap");
+
+const svg = d3.select(chartWrap).append("svg")
+  .style("display", "block")
+  .style("width", "100%");
+
+const g = svg.append("g")
+  .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+
+const xAxisG   = g.append("g").attr("class", "x-axis");
+const yAxisG   = g.append("g").attr("class", "y-axis");
+const yGridG   = g.append("g").attr("class", "y-grid");
+const areaPath = g.append("path").attr("class", "area-path");
+const linePath = g.append("path").attr("class", "line-path");
+const hoverLine = g.append("line").attr("class", "hover-line").style("opacity", 0);
+const hoverDot  = g.append("circle").attr("class", "hover-dot").attr("r", 4.5).style("opacity", 0);
+const overlay   = g.append("rect").attr("fill", "none").attr("pointer-events", "all");
+
+const xScale = d3.scaleTime();
+const yScale = d3.scaleLinear();
+
+const parseDate  = d3.timeParse("%Y-%m-%d");
+const formatDate = d3.timeFormat("%b %d, %Y");
+
+let dims = { width: 600, height: 300 };
+
+const lineGen = d3.line()
+  .x(d => xScale(d.date))
+  .y(d => yScale(d.count))
+  .curve(d3.curveMonotoneX);
+
+const areaGen = d3.area()
+  .x(d => xScale(d.date))
+  .y0(() => dims.height)
+  .y1(d => yScale(d.count))
+  .curve(d3.curveMonotoneX);
+
+// ── Tooltip elements ──────────────────────────────────────────────────────────
+const tooltip   = document.getElementById("tooltip");
+const ttDate    = document.getElementById("tt-date");
+const ttCount   = document.getElementById("tt-count");
+const ttFilters = document.getElementById("tt-filters");
+
+// ── Filter computation ────────────────────────────────────────────────────────
+function computeJobPasses() {
+  const jobs = DATA.jobs;
+  const passes = new Uint8Array(jobs.length);
+  const { selectedCountries, selectedModes, selectedLevels } = state;
+
+  for (let i = 0; i < jobs.length; i++) {
+    const job = jobs[i];
+    let pass = true;
+
+    if (pass && selectedCountries.size > 0) {
+      if (!job.countries.some(c => selectedCountries.has(c))) pass = false;
+    }
+    if (pass && selectedModes.size > 0) {
+      const direct  = selectedModes.has(job.canonical_work_mode);
+      const reMatch = selectedModes.has("Remote") && job.remote_eligible;
+      if (!direct && !reMatch) pass = false;
+    }
+    if (pass && selectedLevels.size > 0) {
+      if (!selectedLevels.has(job.job_level)) pass = false;
+    }
+    passes[i] = pass ? 1 : 0;
+  }
+  return passes;
+}
+
+function computeChartData() {
+  jobPasses = computeJobPasses();
+  const isActive = state.viewMode === "active";
+  const daily = DATA.daily;
+
+  return Object.keys(daily).sort()
+    .filter(dateStr => parseDate(dateStr) >= CHART_START)
+    .map(dateStr => {
+      const day = daily[dateStr];
+      const ids = isActive ? day.active_job_ids : day.new_job_ids;
+      let count = 0;
+      for (const id of ids) count += jobPasses[id];
+      return { date: parseDate(dateStr), count };
+    });
+}
+
+// ── Chart dimensions ──────────────────────────────────────────────────────────
+function getInnerDims() {
+  const totalW = chartWrap.clientWidth || 640;
+  const totalH = Math.max(320, Math.min(520, window.innerHeight * 0.55));
+  return {
+    width:  Math.max(200, totalW - MARGIN.left - MARGIN.right - 4),
+    height: Math.max(200, totalH - MARGIN.top - MARGIN.bottom),
+  };
+}
+
+// ── Chart render / update ─────────────────────────────────────────────────────
+function updateChart(animate = true) {
+  chartData = computeChartData();
+  dims = getInnerDims();
+  const { width, height } = dims;
+
+  svg.attr("height", height + MARGIN.top + MARGIN.bottom);
+  overlay.attr("width", width).attr("height", height);
+
+  // Scales
+  xScale.domain(d3.extent(chartData, d => d.date)).range([0, width]);
+  const maxCount = d3.max(chartData, d => d.count) || 10;
+  yScale.domain([0, maxCount * 1.12]).range([height, 0]).nice();
+
+  // X-axis: one tick per month, placed exactly on the 1st
+  xAxisG.attr("transform", `translate(0,${height})`)
+    .call(
+      d3.axisBottom(xScale)
+        .ticks(d3.timeMonth.every(1))
+        .tickFormat(d3.timeFormat("%b '%y"))
+    );
+  xAxisG.select(".domain").attr("stroke", "#1f2833");
+  xAxisG.selectAll("line").attr("stroke", "#1f2833");
+
+  // Y-grid
+  yGridG.call(
+    d3.axisLeft(yScale).ticks(6).tickSize(-width).tickFormat("")
+  );
+  yGridG.selectAll("line").attr("stroke", "#1a1d27");
+  yGridG.select(".domain").remove();
+
+  const t = d3.transition().duration(animate ? 400 : 0).ease(d3.easeCubicOut);
+
+  yAxisG.transition(t).call(
+    d3.axisLeft(yScale)
+      .ticks(6)
+      .tickFormat(d => d >= 1000 ? d3.format(".1s")(d) : d)
+  );
+  yAxisG.select(".domain").remove();
+  yAxisG.selectAll("line").attr("stroke", "none");
+
+  areaPath.datum(chartData).transition(t).attr("d", areaGen);
+  linePath.datum(chartData).transition(t).attr("d", lineGen);
+}
+
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+function getFilterSummary() {
+  const parts = [];
+  if (state.selectedCountries.size > 0) parts.push([...state.selectedCountries].join(", "));
+  if (state.selectedModes.size > 0)     parts.push([...state.selectedModes].join(", "));
+  if (state.selectedLevels.size > 0)    parts.push([...state.selectedLevels].join(", "));
+  return parts.length > 0 ? parts.join(" • ") : "all jobs";
+}
+
+overlay.on("mousemove", function (event) {
+  if (!chartData.length) return;
+
+  const [mx] = d3.pointer(event);
+  const hoverDate = xScale.invert(mx);
+  const bisect = d3.bisector(d => d.date).center;
+  const idx = bisect(chartData, hoverDate);
+  const d = chartData[Math.max(0, Math.min(idx, chartData.length - 1))];
+  if (!d) return;
+
+  const x = xScale(d.date);
+  const y = yScale(d.count);
+
+  hoverLine
+    .attr("x1", x).attr("x2", x)
+    .attr("y1", 0).attr("y2", dims.height)
+    .style("opacity", 1);
+
+  hoverDot.attr("cx", x).attr("cy", y).style("opacity", 1);
+
+  const label = state.viewMode === "active" ? "active_jobs" : "new_postings";
+  ttDate.textContent    = formatDate(d.date);
+  ttCount.textContent   = `${label}: ${d.count.toLocaleString()}`;
+  ttFilters.textContent = getFilterSummary();
+
+  const pad = 16;
+  const tw  = tooltip.offsetWidth  || 200;
+  const th  = tooltip.offsetHeight || 70;
+  let tx = event.clientX + pad;
+  let ty = event.clientY - th / 2;
+  if (tx + tw > window.innerWidth  - pad) tx = event.clientX - tw - pad;
+  if (ty < pad)                            ty = pad;
+  if (ty + th > window.innerHeight - pad)  ty = window.innerHeight - th - pad;
+
+  tooltip.style.left    = `${tx}px`;
+  tooltip.style.top     = `${ty}px`;
+  tooltip.style.opacity = "1";
+})
+.on("mouseleave", function () {
+  hoverLine.style("opacity", 0);
+  hoverDot.style("opacity", 0);
+  tooltip.style.opacity = "0";
+});
+
+// ── Build controls ────────────────────────────────────────────────────────────
+function buildCheckboxList(containerId, items, stateKey) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+
+  items.forEach(item => {
+    const label = document.createElement("label");
+    label.className = "cb-item";
+
+    const cb = document.createElement("input");
+    cb.type    = "checkbox";
+    cb.value   = item;
+    cb.checked = true;
+
+    cb.addEventListener("change", () => {
+      const checked = new Set();
+      el.querySelectorAll("input[type=checkbox]").forEach(c => {
+        if (c.checked) checked.add(c.value);
+      });
+      state[stateKey] = (checked.size === 0 || checked.size === items.length)
+        ? new Set()
+        : checked;
+      updateChart();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = item;
+
+    label.appendChild(cb);
+    label.appendChild(span);
+    el.appendChild(label);
+  });
+}
+
+function buildControls() {
+  const opts = DATA.meta.filter_options;
+  allCountries = opts.countries;
+  allLevels    = opts.job_levels;
+
+  buildCheckboxList("country-list",  allCountries,               "selectedCountries");
+  buildCheckboxList("workmode-list", ["Remote", "Hybrid", "On-site"], "selectedModes");
+  buildCheckboxList("level-list",    allLevels,                  "selectedLevels");
+
+  document.querySelectorAll(".toggle-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.viewMode = btn.dataset.view;
+      updateChart();
+    });
+  });
+
+}
+
+// ── Meta line ─────────────────────────────────────────────────────────────────
+function updateMetaLine() {
+  const m   = DATA.meta;
+  const gen = m.generated_at.slice(0, 10);
+  document.getElementById("meta-line").textContent =
+    `${m.total_unique_jobs.toLocaleString()} unique jobs | showing 2026-01-01 to ${m.date_range.end} | updated ${gen}`;
+}
+
+// ── Resize ────────────────────────────────────────────────────────────────────
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => updateChart(false), 80);
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    DATA = DATA_INLINE ?? await d3.json(DATA_URL);
+  } catch (err) {
+    document.getElementById("loading").innerHTML =
+      `<span style="color:#ff5555">error: failed to load ${DATA_URL} — ${err.message}</span>`;
+    return;
+  }
+
+  const loading = document.getElementById("loading");
+  if (loading) loading.remove();
+
+  updateMetaLine();
+  buildControls();
+  updateChart(false);
+}
+
+init();
+</script>
+</body>
+</html>
