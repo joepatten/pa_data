@@ -1,37 +1,5 @@
 [
   {
-    "Company":"Din Tai Fung North America",
-    "Title":"People Operations Analyst",
-    "Date Pulled":"2026-03-04",
-    "Posted Date":"2026-03-05",
-    "Location":"Arcadia, CA",
-    "Country":"United States",
-    "Salary":"$92K\/yr - $115K\/yr",
-    "Work Mode":"Hybrid",
-    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4378995078\/?eBP=NON_CHARGEABLE_CHANNEL&refId=7pGWZEuEprQI0ZnStcczZw%3D%3D&trackingId=lSibQtE%2BtKkvraoQxpUmnA%3D%3D&trk=flagship3_search_srp_jobs",
-    "New Flag":"New",
-    "State Province":"California",
-    "Job Level":"Individual Contributor",
-    "Location Full":"Arcadia, CA",
-    "State Province Full":"California"
-  },
-  {
-    "Company":"CommonSpirit Health",
-    "Title":"HR Analyst Workforce Insights",
-    "Date Pulled":"2026-03-04",
-    "Posted Date":"2026-03-05",
-    "Location":"Englewood, CO",
-    "Country":"United States",
-    "Salary":null,
-    "Work Mode":"On-site",
-    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4378985987\/?eBP=NON_CHARGEABLE_CHANNEL&refId=7pGWZEuEprQI0ZnStcczZw%3D%3D&trackingId=sww%2BlL7hWfBFY3fqxDN4UA%3D%3D&trk=flagship3_search_srp_jobs",
-    "New Flag":"New",
-    "State Province":"Colorado",
-    "Job Level":"Individual Contributor",
-    "Location Full":"Englewood, CO",
-    "State Province Full":"Colorado"
-  },
-  {
     "Company":"Array",
     "Title":"Talent Strategy Partner - Product & Engineering",
     "Date Pulled":"2026-03-04",
@@ -80,6 +48,22 @@
     "State Province Full":""
   },
   {
+    "Company":"Din Tai Fung North America",
+    "Title":"People Operations Analyst",
+    "Date Pulled":"2026-03-04",
+    "Posted Date":"2026-03-04",
+    "Location":"Arcadia, CA",
+    "Country":"United States",
+    "Salary":"$92K\/yr - $115K\/yr",
+    "Work Mode":"Hybrid",
+    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4378995078\/?eBP=NON_CHARGEABLE_CHANNEL&refId=7pGWZEuEprQI0ZnStcczZw%3D%3D&trackingId=lSibQtE%2BtKkvraoQxpUmnA%3D%3D&trk=flagship3_search_srp_jobs",
+    "New Flag":"New",
+    "State Province":"California",
+    "Job Level":"Individual Contributor",
+    "Location Full":"Arcadia, CA",
+    "State Province Full":"California"
+  },
+  {
     "Company":"Intuit",
     "Title":"Senior Staff Talent Acquisition People Analytics Lead",
     "Date Pulled":"2026-03-04",
@@ -126,6 +110,22 @@
     "Job Level":"Individual Contributor",
     "Location Full":"Los Angeles, CA",
     "State Province Full":"California"
+  },
+  {
+    "Company":"CommonSpirit Health",
+    "Title":"HR Analyst Workforce Insights",
+    "Date Pulled":"2026-03-04",
+    "Posted Date":"2026-03-04",
+    "Location":"Englewood, CO",
+    "Country":"United States",
+    "Salary":null,
+    "Work Mode":"On-site",
+    "Url":"https:\/\/www.linkedin.com\/jobs\/view\/4378985987\/?eBP=NON_CHARGEABLE_CHANNEL&refId=7pGWZEuEprQI0ZnStcczZw%3D%3D&trackingId=sww%2BlL7hWfBFY3fqxDN4UA%3D%3D&trk=flagship3_search_srp_jobs",
+    "New Flag":"New",
+    "State Province":"Colorado",
+    "Job Level":"Individual Contributor",
+    "Location Full":"Englewood, CO",
+    "State Province Full":"Colorado"
   },
   {
     "Company":"Casepoint",
